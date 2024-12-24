@@ -1,11 +1,14 @@
 from medium import Medium
 from node import Node
+from state import State
 import time
 import threading
+
 def main():
     medium = Medium()
-    nodes = [Node(i, medium) for i in range(5)]
-
+    state = State
+    nodes = [Node(i, medium, state) for i in range(5)]
+    
     threads = []
 
     for node in nodes:

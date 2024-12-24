@@ -23,7 +23,7 @@ class Medium():
     def transmission_add(self, node_id):
         "让一个节点占用信道"
         self.node_in_medium.add(node_id)
-        print(f"Node {node_id}:加入信道")
+        print(f"Node {node_id}:广播到达其它节点")
     
     def collision_detect(self):
         "set内元素数量大于1"
