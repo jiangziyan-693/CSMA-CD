@@ -22,44 +22,53 @@ class Node:
             return False
     
     def random_waiting(self):
-        print(f"Node {self.node_id}: Medium is busy, Waiting...")
+        #print(f"Node {self.node_id}: Medium is busy, Waiting...")
         time.sleep(random.uniform(0.5, 2))
         
    
         
     def collision_detect(self):
         if self.medium.collision_detect():
-            print(f"Node {self.node_id}: Collision Detect!")
+            #print(f"Node {self.node_id}: Collision Detect!")
             return True
         else:
             return False
     
     def random_backoff(self):
-        print(f"Node {self.node_id}: Random Backoff...")
+        #print(f"Node {self.node_id}: Random Backoff...")
         time.sleep(random.uniform(1, 4))
         
         
-    def send(self):
-        print(f"Node {self.node_id}: Sending Data...")
+    def send_data(self):
+        self.state.node_state[self.node_id] = 2
+        #print(f"Node {self.node_id}: Sending Data...")
         time.sleep(0.5)
-        self.medium.transmission_add(self.node_id)
+        self.state.broadcast_info[self.node_id] = 1
         time.sleep(0.5)
         while self.collision_detect():
-            self.medium.transmission_exit(self.node_id)
+            self.state.node_state[self.node_id] = 3
+            self.state.broadcast_info[self.node_id] = 0
             self.random_backoff()
-            self.medium.transmission_add(self.node_id)
+            self.state.broadcast_info[self.node_id] = 1
             time.sleep(1)
-        print(f"Node {self.node_id}: Send Success!")
-        self.medium.transmission_exit(self.node_id)
+        #print(f"Node {self.node_id}: Send Success!")
+        self.state.node_state[self.node_id] = 4
+        time.sleep(1)
+        self.state.send_num[self.node_id] += 1
+        self.state.broadcast_info[self.node_id] = 0
         
     def run(self):
         while self.running:
+            if self.state.node_state[self.node_id] == 4:
+                self.state.node_state[self.node_id] = 0
             time.sleep(random.uniform(1,3))
             if self.busy_detect():# 检测到信道忙，等待一段时间
+                self.state.node_state[self.node_id] = 1
                 self.random_waiting()# 随机等待
                 continue
             else:
-                self.send()# 发送
-                return
+                self.send_data()# 发送
                 
-    
+    def stop(self):
+        self.running = False
+        return

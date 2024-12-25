@@ -9,30 +9,21 @@ class Medium():
     · 判断信道是否有冲突
     · 节点退出信道
     """
-    def __init__(self):
-        self.node_in_medium = set()
+    def __init__(self, state):
+        self.state = state
         print("信道初始化成功！")
         
     def is_busy(self):
         "判断信道是否繁忙"
-        if len(self.node_in_medium) > 0:
+        if self.state.broadcast_info.count(1) > 0:
             return True
         else:
             return False
-    
-    def transmission_add(self, node_id):
-        "让一个节点占用信道"
-        self.node_in_medium.add(node_id)
-        print(f"Node {node_id}:广播到达其它节点")
     
     def collision_detect(self):
         "set内元素数量大于1"
-        if len(self.node_in_medium) > 1:
+        if self.state.broadcast_info.count(1) > 1:
             return True
         else:
             return False
-        
-    def transmission_exit(self, node_id):
-        "节点退出信道"
-        self.node_in_medium.remove(node_id)
     
